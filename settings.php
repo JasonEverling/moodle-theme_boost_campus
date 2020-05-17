@@ -209,6 +209,26 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
+    // Settings title for the Add a block widget. We don't need a description here.
+    $name = 'theme_boost_campus/addablockwidgetheading';
+    $title = get_string('addablockwidgetheadingsetting', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_heading($name, $title, null);
+    $page->add($setting);
+    // Setting to manage where the Add a block widget should be displayed.
+    $name = 'theme_boost_campus/addablockposition';
+    $title = get_string('addablockpositionsetting', 'theme_boost_campus', null, true);
+    $description = get_string('addablockpositionsetting_desc', 'theme_boost_campus', null, true);
+    $addablockpositionsetting = [
+        // Don't use string lazy loading (= false) because the string will be directly used and would produce a
+        // PHP warning otherwise.
+        'positionblockregion' => get_string('settingsaddablockpositionbottomblockregion', 'theme_boost_campus', null, false),
+        'positionnavdrawer' => get_string('settingsaddablockpositionbottomnavdrawer', 'theme_boost_campus', null, true),
+    ];
+    $setting = new admin_setting_configselect($name, $title, $description, $addablockpositionsetting['positionblockregion'],
+        $addablockpositionsetting);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
     // Add tab to settings page.
     $settings->add($page);
 
@@ -293,15 +313,21 @@ if ($ADMIN->fulltree) {
     $page->add($setting);
 
     // Setting to display the switch role to link as a separate tab within the in-course settings panel.
-    $name = 'theme_boost_campus/incoursesettingsswitchtorole';
-    $title = get_string('incoursesettingsswitchtorolesetting', 'theme_boost_campus', null, true);
-    $description = get_string('incoursesettingsswitchtorolesetting_desc', 'theme_boost_campus', null, true);
-    $setting = new admin_setting_configcheckbox($name, $title, $description, 'no', 'yes', 'no'); // Overriding default values
-    // yes = 1 and no = 0 because of the use of empty() in theme_boost_campus_get_pre_scss() (lib.php).
-    // Default 0 value would not write the variable to scss that could cause the scss to crash if used in that file.
-    // See MDL-58376.
+    $name = 'theme_boost_campus/incoursesettingsswitchtoroleposition';
+    $title = get_string('incoursesettingsswitchtorolepositionsetting', 'theme_boost_campus', null, true);
+    $description = get_string('incoursesettingsswitchtorolepositionsetting_desc', 'theme_boost_campus', null, true);
+    $incoursesettingsswitchtorolesetting = [
+     // Don't use string lazy loading (= false) because the string will be directly used and would produce a PHP warning otherwise.
+    'no' => get_string('incoursesettingsswitchtorolesettingjustmenu', 'theme_boost_campus', null, false),
+    'yes' => get_string('incoursesettingsswitchtorolesettingjustcourse', 'theme_boost_campus', null, true),
+    'both' => get_string('incoursesettingsswitchtorolesettingboth', 'theme_boost_campus', null, true)
+    ];
+    $setting = new admin_setting_configselect($name, $title, $description, $incoursesettingsswitchtorolesetting['no'],
+        $incoursesettingsswitchtorolesetting);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
+    $settings->hide_if('theme_boost_campus/incoursesettingsswitchtoroleposition',
+            'theme_boost_campus/showsettingsincourse', 'notchecked');
 
     // Add tab to settings page.
     $settings->add($page);
@@ -421,9 +447,9 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_boost_campus_reset_app_cache');
     $page->add($setting);
 
-    $name = 'theme_boost_campus/imageareaitemslink';
-    $title = get_string('imageareaitemslinksetting', 'theme_boost_campus', null, true);
-    $description = get_string('imageareaitemslinksetting_desc', 'theme_boost_campus', null, true);
+    $name = 'theme_boost_campus/imageareaitemsattributes';
+    $title = get_string('imageareaitemsattributessetting', 'theme_boost_campus', null, true);
+    $description = get_string('imageareaitemsattributessetting_desc', 'theme_boost_campus', null, true);
     $setting = new admin_setting_configtextarea($name, $title, $description, null, PARAM_TEXT);
     $setting->set_updatedcallback('theme_boost_campus_reset_app_cache');
     $page->add($setting);
@@ -516,7 +542,14 @@ if ($ADMIN->fulltree) {
     $title = get_string('loginbackgroundimagesetting', 'theme_boost_campus', null, true);
     $description = get_string('loginbackgroundimagesetting_desc', 'theme_boost_campus', null, true);
     $setting = new admin_setting_configstoredfile($name, $title, $description, 'loginbackgroundimage', 0,
-        array('maxfiles' => 10, 'accepted_types' => 'web_image'));
+        array('maxfiles' => 25, 'accepted_types' => 'web_image'));
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    $name = 'theme_boost_campus/loginbackgroundimagetext';
+    $title = get_string('loginbackgroundimagetextsetting', 'theme_boost_campus', null, true);
+    $description = get_string('loginbackgroundimagetextsetting_desc', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_configtextarea($name, $title, $description, null, PARAM_TEXT);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
@@ -562,7 +595,25 @@ if ($ADMIN->fulltree) {
         $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
-     // Settings title to group navbar related settings together with a common heading. We don't want a description here.
+    // Setting for the width of the block column on the Dashboard.
+    $name = 'theme_boost_campus/blockcolumnwidthdashboard';
+    $title = get_string('blockcolumnwidthdashboardsetting', 'theme_boost_campus', null, true);
+    $description = get_string('blockcolumnwidthdashboardsetting_desc', 'theme_boost_campus', null, true).' '.
+            get_string('blockcolumnwidthdefault', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_configtext_with_maxlength($name, $title, $description, 360, PARAM_INT, null, 3);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    // Setting for the width of the block column on all other pages.
+    $name = 'theme_boost_campus/blockcolumnwidth';
+    $title = get_string('blockcolumnwidthsetting', 'theme_boost_campus', null, true);
+    $description = get_string('blockcolumnwidthsetting_desc', 'theme_boost_campus', null, true).' '.
+            get_string('blockcolumnwidthdefault', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_configtext_with_maxlength($name, $title, $description, 360, PARAM_INT, null, 3);
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    // Settings title to group navbar related settings together with a common heading. We don't want a description here.
     $name = 'theme_boost_campus/navbardesignheading';
     $title = get_string('navbardesignheadingsetting', 'theme_boost_campus', null, true);
     $setting = new admin_setting_heading($name, $title, null);
@@ -572,8 +623,53 @@ if ($ADMIN->fulltree) {
     $title = get_string('darknavbarsetting', 'theme_boost_campus', null, true);
     $description = get_string('darknavbarsetting_desc', 'theme_boost_campus', null, true);
     $setting = new admin_setting_configcheckbox($name, $title, $description, 'no', 'yes', 'no' ); // Overriding default values
-        // yes = 1 and no = 0 because of the use of empty() in theme_boost_campus_get_pre_scss() (lib.php). Default 0 value would
-        // not write the variable to scss that could cause the scss to crash if used in that file. See MDL-58376.
+    // yes = 1 and no = 0 because of the use of empty() in theme_boost_campus_get_pre_scss() (lib.php). Default 0 value would
+    // not write the variable to scss that could cause the scss to crash if used in that file. See MDL-58376.
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    // Settings title to group navbar related settings together with a common heading. We don't want a description here.
+    $name = 'theme_boost_campus/helptextheading';
+    $title = get_string('helptextheadingsetting', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_heading($name, $title, null);
+    $page->add($setting);
+
+    $name = 'theme_boost_campus/helptextmodal';
+    $title = get_string('helptextmodalsetting', 'theme_boost_campus', null, true);
+    $description = get_string('helptextmodalsetting_desc', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 'no', 'yes', 'no' ); // Overriding default values
+    // yes = 1 and no = 0 because of the use of empty() in theme_boost_campus_get_pre_scss() (lib.php). Default 0 value would
+    // not write the variable to scss that could cause the scss to crash if used in that file. See MDL-58376.
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    // Settings title to group breakpoint related settings together with a common heading. We don't want a description here.
+    $name = 'theme_boost_campus/breakpointheading';
+    $title = get_string('breakpointheadingsetting', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_heading($name, $title, null);
+    $page->add($setting);
+
+    $name = 'theme_boost_campus/breakpoint';
+    $title = get_string('breakpointsetting', 'theme_boost_campus', null, true);
+    $description = get_string('breakpointsetting_desc', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_configcheckbox($name, $title, $description, 'no', 'yes', 'no' ); // Overriding default values
+    // yes = 1 and no = 0 because of the use of empty() in theme_boost_campus_get_pre_scss() (lib.php). Default 0 value would
+    // not write the variable to scss that could cause the scss to crash if used in that file. See MDL-58376.
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    // Settings title to group additional resources settings together with a common heading. We don't want a description here.
+    $name = 'theme_boost_campus/additionalresourcesheading';
+    $title = get_string('additionalresourcesheadingsetting', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_heading($name, $title, null);
+    $page->add($setting);
+
+    // Background image setting.
+    $name = 'theme_boost_campus/additionalresources';
+    $title = get_string('additionalresourcessetting', 'theme_boost_campus', null, true);
+    $description = get_string('additionalresourcessetting_desc', 'theme_boost_campus', null, true);
+    $setting = new admin_setting_configstoredfile($name, $title, $description, 'additionalresources', 0,
+        array('maxfiles' => -1));
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 

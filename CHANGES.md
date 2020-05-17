@@ -4,8 +4,141 @@ moodle-theme_boost_campus
 Changes
 -------
 
-### Unreleased
+### Release v3.8-r1
 
+* 2020-03-24 - Changed setting imageareaitemslink to imageareaitemsattributes to be able to add alt text to the images.
+* 2020-03-10 - Fixed accessibility issues with in-course settings.
+* 2020-03-09 - Fixed accessibility issues with back-to-top button.
+* 2020-03-05 - Adjusted function full_header() in core_renderer.php due to upstream changes in theme Boost.
+* 2020-03-05 - Removed SCSS rule to wrap words in cards as it has been fixed in theme Boost.
+* 2020-03-05 - Adjusted login.mustache template due to upstream changes in theme Boost.
+* 2020-03-05 - Adjusted columns2.mustache template due to upstream changes in theme Boost.
+* 2020-03-05 - Prepare compatibility for Moodle 3.8.
+
+### Release v3.7-r4
+
+* 2020-02-11 - Re-ordered in course course settings to be displayed within the course header.
+* 2020-02-07 - Added missing information to README.md for the changes to the activity navigation links.
+* 2020-02-06 - Made changes to icons in course category overview undone as the alignment of them were improved in theme Boost (MDL-65357).
+* 2020-01-29 - Adjusted navbar.mustache template due to upstream changes in theme Boost.
+* 2020-01-29 - Adjusted columns2.mustache template due to upstream changes in theme Boost.
+* 2019-12-20 - Added Behat tests.
+               PLEASE NOTE: For all scenarios to pass, the Moodle version 3.7.3+ (Build: 20191212) is needed.
+* 2019-12-17 - Fixed bug for the selection of block regions when 2 block columns in footer are enabled.
+* 2019-11-29 - Moved the variable output.standard_end_of_body_html from footer.mustache to solve Javascript issues with behat tests.
+
+### Release v3.7-r3
+
+* 2019-11-13 - Improved Video JS Skin for hiding big play button in audio players and removed centered placement of this button in SCSS.
+               IMPORTANT NOTE for ADMINS: If you want the button to be centered again, please add the class "vjs-big-play-centered"
+               to the setting "media_videojs | videocssclass".
+* 2019-11-11 - Improved loginform.mustache for the info box and maintenance box to fit to the login box.
+* 2019-11-08 - Added special CSS styles for plugin mod_attendance.
+* 2019-10-28 - Changed the link in the README.md to get to the correct Font Awesome version.
+* 2019-10-28 - Adjusted login.mustache template due to upstream changes in theme Boost.
+* 2019-10-28 - Adjusted columns2.mustache template due to upstream changes in theme Boost.
+* 2019-10-28 - Adjusted loginform.mustache template due to upstream changes in Moodle core.
+* 2019-10-28 - Adjusted function favicon() in core_renderer.php due to upstream changes in Moodle core.
+* 2019-10-28 - Removed CSS rule for maintenance warning due to upstream changes.
+
+### Release v3.7-r2
+
+* 2019-06-21 - Removed SCSS fix because MDL-61319 has now been fixed and integrated.
+* 2019-06-11 - Added hide_if function to suitable admin setting incoursesettingsswitchtoroleposition and corrected README.md.
+
+### Release v3.7-r1
+
+* 2019-06-04 - Further formal changes to the course_renderer to be constistent with Moodle core.
+* 2019-06-04 - Adjusted function coursecat_coursebox() in course_renderer.php due to upstream changes in theme Boost.
+* 2019-06-03 - Added newly introduced collection labels in the navdrawer nodes.
+* 2019-06-03 - Adjusted columns2.php due to upstream changes in theme Boost.
+* 2019-06-03 - Adjusted login.mustache template due to upstream changes in theme Boost.
+* 2019-06-03 - Adjusted footer.mustache template due to upstream changes in theme Boost.
+* 2019-06-03 - Adjusted columns2.mustache template due to upstream changes in theme Boost.
+* 2019-06-03 - Further formal changes to the renderers to be constistent with Moodle core.
+* 2019-05-31 - Adjusted function render_help_icon() in core_renderer.php due to upstream changes in theme Boost.
+* 2019-05-31 - Adjusted function render_login() in core_renderer.php due to upstream changes in theme Boost.
+* 2019-05-31 - Adjusted function context_header_settings_menu() in core_renderer.php due to upstream changes in theme Boost.
+* 2019-05-31 - Adjusted function full_header() in core_renderer.php due to upstream changes in theme Boost.
+* 2019-05-31 - Fixed referencing of renderers due to upstream changes in theme Boost.
+* 2019-05-31 - Prepare compatibility for Moodle 3.7.
+
+### Release v3.6-r5
+
+* 2019-05-29 - Check existence of property blockcolumnwidth before accessing it.
+* 2019-05-29 - Login background image did not fill the page completely when browser window was really low but really wide.
+* 2019-05-27 - Added multilanguage filtering to the login background image texts.
+* 2019-05-24 - Prevent back-to-top button from being printed.
+* 2019-05-03 - Added a setting to be able to add texts to your uploaded background images for the login page.
+* 2019-05-02 - Added setting to be able to add additional resources to the theme.
+
+### Release v3.6-r4
+
+* 2019-04-26 - Fixed some fixable prechecker warnings.
+* 2019-04-26 - Updated README.md, because a change was removed due tu upstream changes.
+* 2019-04-25 - Fixed bug in the change to increase the number of uploadable login background images.
+
+### Release v3.6-r3
+
+* 2019-04-16 - Add the possibility to set the block column width on the Dashboard and all other pages.
+* 2019-04-16 - Fixed template paths in mustache templates.
+* 2019-04-16 - Adjusted navbar.mustache template due to upstream changes in theme Boost.
+* 2019-04-15 - Adjusted loginform.mustache and helpicon.mustache templates due to upstream changes in theme Boost.
+* 2019-04-15 - Increased limit for background images up to 25.
+* 2019-02-15 - Setting to manage where the Add a block widget should be displayed.
+* 2019-04-15 - Adjusted function context_header_settings_menu() due to upstream changes in theme Boost.
+* 2019-04-15 - Added source information to all overridden renderers.
+
+### Release v3.6-r2
+
+* 2019-02-13 - Added source information to renderers that are overridden from core directly.
+* 2019-02-07 - Adjusted function coursecat_coursebox to upstream changes in Moodle core.
+
+### Release v3.6-r1
+
+* 2019-01-31 - Deleted now non matching rule in post.scss.
+* 2019-01-31 - Adjusted styles due to upstream SCSS changes in Boost.
+* 2019-01-30 - Adjusted config.php due to upstream changes in theme Boost.
+* 2019-01-29 - Adjusted styles for the footnote due to upstream changes in Boost.
+* 2019-01-28 - Adjusted styles for the imagearea due to upstream changes in Boost.
+* 2019-01-25 - Adjusted login.mustache template due to upstream changes in theme Boost.
+* 2019-01-25 - Adjusted header.mustache template due to upstream changes in theme Boost.
+* 2019-01-25 - Adjusted loginform.mustache template due to upstream changes in theme Boost.
+* 2019-01-25 - Adjusted columns2.mustache template due to upstream changes in theme Boost.
+* 2019-01-24 - Adjusted function render_login due to upstream changes in theme Boost.
+* 2018-01-24 - Check compatibility for Moodle 3.6, no functionality change.
+
+### Release v3.5-r5
+
+* 2018-01-23 - Remove unnecessary double border and padding around blocks in main column on Dashboard.
+* 2018-01-23 - Improved whitespaces on small screens to show more of the course content.
+* 2018-12-20 - Fixed loginform.mustache as a wrong bootstrap class sneaked in previously and as a modification comment was missing
+* 2018-12-20 - Fixed a bug with modal help text setting occuring in (sub)plugins that use only enabled / enabled_help for the help texts.
+* 2018-12-19 - Improved the feature showhintcourseguestaccess to not be shown in some edge cases.
+* 2018-12-18 - Adding 'both' option for 'Switch to role…' menu fixes - Many thanks to Luca Bösch (lucaboesch) for his proposal and main work on this!
+* 2018-12-17 - Setting to change the breakpoint for smaller screens.
+
+### Release v3.5-r4
+
+* 2018-12-12 - Bugfix: Improved font size for all modal help text dialogues.
+* 2018-12-12 - Adjusted navbar.mustache template due to upstream changes in MDL-62145.
+* 2018-12-06 - Bugfix: Improved placement of the footnote to prevent that it covers the login form on small mobile devices.
+* 2018-12-04 - Bugfix: body and html tags were closed before additional layout elements were added.
+* 2018-12-04 - Changed travis.yml due to upstream changes.
+
+### Release v3.5-r3
+
+* 2018-11-26 - Fixed broken login functionality caused by Moodle security patch (see MDL-63183).
+
+### Release v3.5-r2
+
+* 2018-07-31 - Fixed bug in function theme_boost_campus_process_flatnav.
+* 2018-07-31 - Removed deprecated.txt file because it is unnecessary.
+* 2018-07-24 - Setting to display help texts in modal dialogues instead of popups.
+* 2018-07-24 - Fixed brand colors due to Bootstrap changes in Boost.
+* 2018-07-24 - Fixed logo width when loginform is active.
+* 2018-07-24 - Fixed debugging output for admins on profile page.
+* 2018-07-24 - Removed rules for local_boostnavigation due to core integration.
 * 2018-06-15 - Minor fix to the user menu displaying if switch role is moved to course menu.
 * 2018-06-12 - Added Video JS skin that fits to the brand color.
 

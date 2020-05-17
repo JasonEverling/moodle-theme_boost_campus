@@ -50,5 +50,28 @@ function xmldb_theme_boost_campus_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018051701, 'theme', 'boost_campus');
     }
 
+    if ($oldversion < 2018121700) {
+        // The setting "theme_boost_campus|incoursesettingsswitchtorole" has been renamed because the setting was
+        // upgraded with another option.
+        // Therefore set the old config to null.
+        set_config('incoursesettingsswitchtorole', null, 'theme_boost_campus');
+
+        upgrade_plugin_savepoint(true, 2018121700, 'theme', 'boost_campus');
+    }
+
+    if ($oldversion < 2020030800) {
+
+        // The setting "theme_boost_campus|imageareaitemslinks" has been renamed to imageareaitemsattributes.
+        // If the setting is configured.
+        if ($oldimageareaitemslinks = get_config('theme_boost_campus', 'imageareaitemslink')) {
+            // Set the value of the setting to the new setting.
+            set_config('imageareaitemsattributes', $oldimageareaitemslinks, 'theme_boost_campus');
+            // Drop the old setting.
+            set_config('imageareaitemslink', null, 'theme_boost_campus');
+        }
+
+        upgrade_plugin_savepoint(true, 2020030800, 'theme', 'boost_campus');
+    }
+
     return true;
 }

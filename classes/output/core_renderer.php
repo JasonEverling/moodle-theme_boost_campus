@@ -57,12 +57,15 @@ defined('MOODLE_INTERNAL') || die;
  * @package theme_boost_campus
  * @category output
  */
-class core_renderer extends \theme_boost\output\core_renderer {
+class core_renderer extends \core_renderer {
 
     /**
      * Override to display an edit button again by calling the parent function
      * in core/core_renderer because theme_boost's function returns an empty
      * string and therefore displays nothing.
+     *
+     * MODIFICATION: This renderer function is copied and modified from /theme/boost/classes/output/core_renderer.php
+     *
      * @param moodle_url $url The current course url.
      * @return \core_renderer::edit_button Moodle edit button.
      */
@@ -82,6 +85,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * Override to add additional class for the random login image to the body.
      *
      * Returns HTML attributes to use within the body tag. This includes an ID and classes.
+     *
+     * KIZ MODIFICATION: This renderer function is copied and modified from /lib/outputrenderers.php
      *
      * @since Moodle 2.5.1 2.6
      * @param string|array $additionalclasses Any additional classes to give the body tag,
@@ -110,10 +115,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Override to be able to use uploaded images from admin_setting as well.
      *
-     * Returns the URL for the favicon.
+     * Returns the moodle_url for the favicon.
+     *
+     * KIZ MODIFICATION: This renderer function is copied and modified from /lib/outputrenderers.php
      *
      * @since Moodle 2.5.1 2.6
-     * @return string The favicon URL
+     * @return moodle_url The moodle_url for the favicon
      */
     public function favicon() {
         global $PAGE;
@@ -134,6 +141,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * Override to display switched role information beneath the course header instead of the user menu.
      * We change this because the switch role function is course related and therefore it should be placed in the course context.
      *
+     * MODIFICATION: This renderer function is copied and modified from /lib/outputrenderers.php
+     *
      * Wrapper for header elements.
      *
      * @return string HTML to display the main header.
@@ -142,6 +151,17 @@ class core_renderer extends \theme_boost\output\core_renderer {
         // MODIFICATION START.
         global $PAGE, $USER, $COURSE, $CFG;
         // MODIFICATION END.
+
+        if ($PAGE->include_region_main_settings_in_header_actions() && !$PAGE->blocks->is_block_present('settings')) {
+            // Only include the region main settings if the page has requested it and it doesn't already have
+            // the settings block on it. The region main settings are included in the settings block and
+            // duplicating the content causes behat failures.
+            $PAGE->add_header_action(html_writer::div(
+                    $this->region_main_settings_menu(),
+                    'd-print-none',
+                    ['id' => 'region-main-settings-menu']
+            ));
+        }
 
         $header = new stdClass();
         // MODIFICATION START.
@@ -171,7 +191,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 has_capability('moodle/user:update', \context_system::instance())) {
                 $url = new moodle_url('/user/editadvanced.php', array('id'       => $userid, 'course' => $COURSE->id,
                                                                       'returnto' => 'profile'));
-                $header->pageheadingbutton .= $this->single_button($url, get_string('editmyprofile', 'core'));
+                $header->pageheadingbutton = $this->single_button($url, get_string('editmyprofile', 'core'));
             } else if ((has_capability('moodle/user:editprofile', \context_user::instance($userid)) &&
                     !is_siteadmin($USER)) || ($currentuser &&
                     has_capability('moodle/user:editownprofile', \context_system::instance()))) {
@@ -185,13 +205,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $header->pageheadingbutton = $this->page_heading_button();
         ORIGINAL END. */
         $header->courseheader = $this->course_header();
+        $header->headeractions = $PAGE->get_header_actions();
         // MODIFICATION START:
         // Change this to add the result in the html variable to be able to add further features below the header.
         // Render from the own header template.
-        $html = $this->render_from_template('theme_boost_campus/header', $header);
+        $html = $this->render_from_template('theme_boost_campus/full_header', $header);
         // MODIFICATION END.
         /* ORIGINAL START
-        return $this->render_from_template('theme_boost/header', $header);
+        return $this->render_from_template('core/full_header', $header);
         ORIGINAL END. */
 
         // MODIFICATION START:
@@ -213,10 +234,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         // MODIFICATION START:
         // If the setting showhintcourseguestaccess is set, a hint for users that view the course with guest access is shown.
+        // We also check that the user did not switch the role. This is a special case for roles that can fully access the course
+        // without being enrolled. A role switch would show the guest access hint additionally in that case and this is not
+        // intended.
         if (get_config('theme_boost_campus', 'showhintcourseguestaccess') == 'yes'
             && is_guest(\context_course::instance($COURSE->id), $USER->id)
             && $PAGE->has_set_url()
-            && $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
+            && $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
+            && !is_role_switched($COURSE->id)) {
             $html .= html_writer::start_tag('div', array('class' => 'course-guestaccess-infobox alert alert-warning'));
             $html .= html_writer::tag('i', null, array('class' => 'fa fa-exclamation-circle fa-3x fa-pull-left'));
             $html .= get_string('showhintcourseguestaccessgeneral', 'theme_boost_campus',
@@ -229,33 +254,30 @@ class core_renderer extends \theme_boost\output\core_renderer {
         // MODIFICATION START.
         // Only use this if setting 'showswitchedroleincourse' is active.
         if (get_config('theme_boost_campus', 'showswitchedroleincourse') === 'yes') {
-            // Check if user is logged in.
+            // Check if the user did a role switch.
             // If not, adding this section would make no sense and, even worse,
             // user_get_user_navigation_info() will throw an exception due to the missing user object.
-            if (isloggedin()) {
+            if (is_role_switched($COURSE->id)) {
+                // Get the role name switched to.
                 $opts = \user_get_user_navigation_info($USER, $this->page);
-                // Role is switched.
-                if (!empty($opts->metadata['asotherrole'])) {
-                    // Get the role name switched to.
-                    $role = $opts->metadata['rolename'];
-                    // Get the URL to switch back (normal role).
-                    $url = new moodle_url('/course/switchrole.php',
-                        array('id'        => $COURSE->id, 'sesskey' => sesskey(), 'switchrole' => 0,
-                              'returnurl' => $this->page->url->out_as_local_url(false)));
-                    $html .= html_writer::start_tag('div', array('class' => 'switched-role-infobox alert alert-info'));
-                    $html .= html_writer::tag('i', null, array('class' => 'fa fa-user-circle fa-3x fa-pull-left'));
-                    $html .= html_writer::start_tag('div');
-                    $html .= get_string('switchedroleto', 'theme_boost_campus');
-                    // Give this a span to be able to address via CSS.
-                    $html .= html_writer::tag('span', $role, array('class' => 'switched-role'));
-                    $html .= html_writer::end_tag('div');
-                    // Return to normal role link.
-                    $html .= html_writer::start_tag('div');
-                    $html .= html_writer::tag('a', get_string('switchrolereturn', 'core'),
-                        array('class' => 'switched-role-backlink', 'href' => $url));
-                    $html .= html_writer::end_tag('div'); // Return to normal role link: end div.
-                    $html .= html_writer::end_tag('div');
-                }
+                $role = $opts->metadata['rolename'];
+                // Get the URL to switch back (normal role).
+                $url = new moodle_url('/course/switchrole.php',
+                    array('id'        => $COURSE->id, 'sesskey' => sesskey(), 'switchrole' => 0,
+                          'returnurl' => $this->page->url->out_as_local_url(false)));
+                $html .= html_writer::start_tag('div', array('class' => 'switched-role-infobox alert alert-info'));
+                $html .= html_writer::tag('i', null, array('class' => 'fa fa-user-circle fa-3x fa-pull-left'));
+                $html .= html_writer::start_tag('div');
+                $html .= get_string('switchedroleto', 'theme_boost_campus');
+                // Give this a span to be able to address via CSS.
+                $html .= html_writer::tag('span', $role, array('class' => 'switched-role'));
+                $html .= html_writer::end_tag('div');
+                // Return to normal role link.
+                $html .= html_writer::start_tag('div');
+                $html .= html_writer::tag('a', get_string('switchrolereturn', 'core'),
+                    array('class' => 'switched-role-backlink', 'href' => $url));
+                $html .= html_writer::end_tag('div'); // Return to normal role link: end div.
+                $html .= html_writer::end_tag('div');
             }
         }
         // MODIFICATION END.
@@ -268,6 +290,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      * This is an optional menu that can be added to a layout by a theme. It contains the
      * menu for the course administration, only on the course main page.
+     *
+     * MODIFICATION: This renderer function is copied and modified from /lib/outputrenderers.php.
      *
      * @return string
      */
@@ -282,6 +306,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $showfrontpagemenu = false;
         $showusermenu = false;
 
+        // We are on the course home page.
         // MODIFICATION START.
         // REASON: With the original code, the course settings icon will only appear on the course main page.
         // Therefore the access to the course settings and related functions is not possible on other
@@ -304,7 +329,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $courseformat = course_get_format($this->page->course);
         // This is a single activity course format, always show the course menu on the activity main page.
         if ($context->contextlevel == CONTEXT_MODULE &&
-            !$courseformat->has_view_page()) {
+                !$courseformat->has_view_page()) {
 
             $this->page->navigation->initialise();
             $activenode = $this->page->navigation->find_active_node();
@@ -312,7 +337,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             if ($this->page->is_settings_menu_forced()) {
                 $showcoursemenu = true;
             } else if (!empty($activenode) && ($activenode->type == navigation_node::TYPE_ACTIVITY ||
-                    $activenode->type == navigation_node::TYPE_RESOURCE)) {
+                        $activenode->type == navigation_node::TYPE_RESOURCE)) {
 
                 // We only want to show the menu on the first page of the activity. This means
                 // the breadcrumb has no additional nodes.
@@ -324,15 +349,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         // This is the site front page.
         if ($context->contextlevel == CONTEXT_COURSE &&
-            !empty($currentnode) &&
-            $currentnode->key === 'home') {
+                !empty($currentnode) &&
+                $currentnode->key === 'home') {
             $showfrontpagemenu = true;
         }
 
         // This is the user profile page.
         if ($context->contextlevel == CONTEXT_USER &&
-            !empty($currentnode) &&
-            ($currentnode->key === 'myprofile')) {
+                !empty($currentnode) &&
+                ($currentnode->key === 'myprofile')) {
             $showusermenu = true;
         }
 
@@ -380,16 +405,22 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * Override to use theme_boost_campus login template
      * Renders the login form.
      *
+     * MODIFICATION: This renderer function is copied and modified from lib/outputrenderers.php
+     *
      * @param \core_auth\output\login $form The renderable.
      * @return string
      */
     public function render_login(\core_auth\output\login $form) {
-        global $SITE;
+        global $CFG, $SITE;
 
         $context = $form->export_for_template($this);
 
         // Override because rendering is not supported in template yet.
-        $context->cookieshelpiconformatted = $this->help_icon('cookiesenabled');
+        if ($CFG->rememberusername == 0) {
+            $context->cookieshelpiconformatted = $this->help_icon('cookiesenabledonlysession');
+        } else {
+            $context->cookieshelpiconformatted = $this->help_icon('cookiesenabled');
+        }
         $context->errorformatted = $this->error_text($context->error);
         $url = $this->get_logo_url();
         if ($url) {
@@ -397,7 +428,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         $context->logourl = $url;
         $context->sitename = format_string($SITE->fullname, true,
-            ['context' => context_course::instance(SITEID), "escape" => false]);
+                ['context' => context_course::instance(SITEID), "escape" => false]);
         // MODIFICATION START.
         // Only if setting "loginform" is checked, then call own login.mustache.
         if (get_config('theme_boost_campus', 'loginform') == 'yes') {
@@ -408,6 +439,33 @@ class core_renderer extends \theme_boost\output\core_renderer {
         // MODIFICATION END.
         /* ORIGINAL START.
         return $this->render_from_template('core/loginform', $context);
+        ORIGINAL END. */
+    }
+
+    /**
+     * Implementation of user image rendering.
+     *
+     * MODIFICATION: This renderer function is copied and modified from lib/outputrenderers.php
+     *
+     * @param help_icon $helpicon A help icon instance
+     * @return string HTML fragment
+     */
+    protected function render_help_icon(help_icon $helpicon) {
+        $context = $helpicon->export_for_template($this);
+        // MODIFICATION START.
+        // ID needed for modal dialog.
+        $context->linkid = $helpicon->component.'-'.$helpicon->identifier;
+        // Fill body variable needed for modal mustache with text value.
+        $context->body = $context->text;
+        if (get_config('theme_boost_campus', 'helptextmodal') == 'yes') {
+            return $this->render_from_template('theme_boost_campus/help_icon', $context);
+        } else {
+            return $this->render_from_template('core/help_icon', $context);
+        }
+        // MODIFICATION END.
+        /* ORIGINAL START.
+        $context = $helpicon->export_for_template($this);
+        return $this->render_from_template('core/help_icon', $context);
         ORIGINAL END. */
     }
 }

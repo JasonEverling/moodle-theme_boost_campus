@@ -76,6 +76,13 @@ $string['coursehintsheadingsetting'] = 'Course related hints.';
 $string['showswitchedroleincoursesetting'] = 'Position of switch role information';
 $string['showswitchedroleincoursesetting_desc'] = 'With this setting you can choose the place where the information to which role a user has switched is being displayed. If not checked (default value), the role information will be displayed right beneath the user\'s name in the user menu (like in theme Boost). If checked, this information - together with a link to switch back - will be displayed beneath the course, as this functionality is course related.';
 $string['switchedroleto'] = 'You are viewing this course currently with the role:';
+
+// ...Add a block widget position.
+$string['addablockwidgetheadingsetting'] = 'Position of "Add a block" widget';
+$string['addablockpositionsetting'] = 'Position of "Add a block" widget';
+$string['addablockpositionsetting_desc'] = 'With this setting you can manage where the "Add a block" widget should be displayed. If you select "At the bottom of the nav drawer" the widget to add new blocks is displayed in the left sliding navigation panel like in theme Boost. If you select "At the bottom of the default block region" the widget to add new blocks will be displayed in the default block region. Please note: This has the side effect that this block will also be shown in the block region on activity settings pages when editing mode is turned on.';
+$string['settingsaddablockpositionbottomnavdrawer'] = 'At the bottom of the nav drawer';
+$string['settingsaddablockpositionbottomblockregion'] = 'At the bottom of the default block region';
 // ...Show hint for hidden course.
 $string['showhintcoursehiddensetting'] = 'Show hint in hidden courses';
 $string['showhintcoursehiddensetting_desc'] = 'With this setting a hint will appear in the course header as long as the visibility of the course is hidden. This helps to identify the visibility state of a course at a glance without the need for looking at the course settings.';
@@ -89,9 +96,11 @@ $string['showsettingsincoursesetting'] = 'In course settings menu';
 $string['showsettingsincoursesetting_desc'] = 'With this setting you can change the displaying of the context menus. In Boost, there is a popup context menu right next to the cog icon. By enabling this setting the settings will occur directly beneath the course header. The settings are arranged in tabs, so it is easier for the user to get to the desired setting instead of scanning a long list of menu items. With this setting we also hide the settings icon on the participants page as the entries on this page are duplicated with the in-course course menu and therefore not necessary.<br/>
 Please note that this change does not affect users who have switched off javascript in their browsers - they will still get the behaviour from Moodle core with a popup course context menu.';
 // ...Show switch role to link within the in-course course settings.
-$string['incoursesettingsswitchtorolesetting'] = 'Move "Switch role to..." to the course settings';
-$string['incoursesettingsswitchtorolesetting_desc'] = 'With this setting you can move the "Switch role to..." link as a new tab from the user menu to the in-course course menu. The role switching is a feature which is used in course context and thus it is better to place it in the course settings menu than in the user menu. <br/>
-Please note that this setting won\'t have any effect if you do not activate the "In course settings menu" above.';
+$string['incoursesettingsswitchtorolepositionsetting'] = '"Switch role to..." location(s)';
+$string['incoursesettingsswitchtorolesettingjustmenu'] = 'Just in the user menu';
+$string['incoursesettingsswitchtorolesettingjustcourse'] = 'Just in the course settings';
+$string['incoursesettingsswitchtorolesettingboth'] = 'In both places: in the user menu and in the course settings';
+$string['incoursesettingsswitchtorolepositionsetting_desc'] = 'With this setting you can choose the place where the information to which role a user has switched is being displayed. If set to \'Just in the user menu\' (default value), the role information will be displayed right beneath the user\'s name in the user menu (like in theme Boost). If set to \'Just in the course settings\', this information - together with a link to switch back - will be displayed beneath the course, as this functionality is course related. If set to \'Both in the user menu and in the course settings\' it will be shown in both places.';
 
 
 // Footer layout settings.
@@ -129,12 +138,18 @@ $string['imageareaheadingsetting'] = 'Image area';
 $string['imageareaheadingsetting_desc'] = 'The following settings allow adding an additional region for displaying images like logos. This region will be added beneath the standard footer and above the optional footnote region. If images are uploaded this area will be displayed on all sites that use the columns2 layout.';
 $string['imageareaitemssetting'] = 'Image area items';
 $string['imageareaitemssetting_desc'] = 'With this widget you can upload your images that will be displayed in the additional image area region. The images will be sorted and displayed alphabetically by the filename. To remove this region, simply delete all uploaded images.';
-$string['imageareaitemslinksetting'] = 'Image area item links';
-$string['imageareaitemslinksetting_desc'] = 'With this optional setting you can add links to your uplaoded images.<br/>
-Each line consists of the file identifier (the file name) the a link URL, separated by pipe characters. Each link declaration needs to be written in a new line. <br/>
+$string['imageareaitemsattributessetting'] = 'Image area item additional attributes';
+$string['imageareaitemsattributessetting_desc'] = 'With this optional setting you can add additional attributes to your uplaoded images:
+<ul>
+<li>a link</li>
+<li>an alt attribute which describes the image</li>
+</ul>
+Each line consists of the file identifier (the file name) the link URL and the alt-text, separated by pipe characters. Each link declaration needs to be written in a new line. <br/>
 For example:<br/>
-moodle.jpg|http://moodle.org<br/>
-You can declare links for a abitrary amount of your uplaoded images. The links will be added only to those images that match their filename with the identifier declared in this setting.';
+```
+moodle.jpg|https://moodle.org|Moodle logo
+```<br/><br/>
+You can declare the additional attributes for an arbitrary amount of your uplaoded images. The attributes will be added only to those images that match their filename with the identifier declared in this setting.';
 $string['imageareaitemsmaxheightsetting'] = 'Image area items maximal height';
 $string['imageareaitemsmaxheightsetting_desc'] = 'With this setting you can change the height in pixels for your uploaded images. All images will have the same maximum height and their width will be resized proportionally. The default value is set to 100 pixels.';
 // ...Footnote.
@@ -162,6 +177,12 @@ $string['designsettings'] = 'Design Settings';
 $string['loginpagedesignheadingsetting'] = 'Login page';
 $string['loginbackgroundimagesetting'] = 'Login page background images';
 $string['loginbackgroundimagesetting_desc'] = 'Images uploaded in this setting will be randomly displayed on the login page as background images.';
+$string['loginbackgroundimagetextsetting'] = 'Display text for login background images';
+$string['loginbackgroundimagetextsetting_desc'] = 'With this optional setting you can add text, e.g. a copyright notice to your uploaded background images.<br/>
+Each line consists of the file identifier (the file name) and the text that should be displayed, separated by a pipe character. Each declaration needs to be written in a new line. <br/>
+For example:<br/>
+background-image-1.jpg|Copyright: CC0<br/>
+You can declare texts for a arbitrary amount of your uploaded background images. The texts will be added only to those images that match their filename with the identifier declared in this setting.';
 $string['loginform'] = 'Login form';
 $string['loginform_desc'] = 'With this setting you can optimize the login form to fit to a greater variety background images (if checked). This means that the login form will be moved to the left of the login page, will get smaller in width and will get a background that let the background image shine through. The login form will be placed on the left because many images have their main content rather in the center and so we keep this content visible. Note: You can also activate this setting if no background images are uploaded, of course.';
 // ...Fonts.
@@ -174,12 +195,35 @@ $string['blockdesignheadingsetting'] = 'Blocks';
 $string['blockiconsetting'] = 'Block icon';
 $string['blockiconsetting_desc'] = 'With this setting you can add a default Font Awesome icon in front of the block title.  If checked, we additionally provide individual icon replacements for many Moodle core blocks and also some widely used blocks. You also can change the icons easily for each block individually in your raw SCSS via the change of the Font Awesome content. For all available icons please visit http://fontawesome.io/icons/ and use the Unicode value of the icon to replace the default one. <br/> The code to change the icon looks like this example change for the block "People": <br/>';
 $string['blockiconsetting_desc_code'] = '.block_people .card-block .card-title::before { content: \'\f0c0\' ; }';
+$string['blockcolumnwidthsetting'] = 'Block column width on all other pages';
+$string['blockcolumnwidthsetting_desc'] = 'With this setting you can change the width (in pixels) of the block column on all other pages except the Dashboard.';
+$string['blockcolumnwidthdashboardsetting'] = 'Block column width on Dashboard';
+$string['blockcolumnwidthdashboardsetting_desc'] = 'With this setting you can change the width (in pixels) of the block column on the Dashboard.';
+$string['blockcolumnwidthdefault'] = 'The default width from Moodle 3.6 on is 360px, until Moodle 3.5 the width was 250px.';
 // ...Navbar.
 $string['navbardesignheadingsetting'] = 'Navbar';
 $string['darknavbarsetting'] = 'Dark navbar';
 $string['darknavbarsetting_desc'] = 'By checking this setting you can invert the default light navbar to a dark one with white links.';
+// ...Help texts.
+$string['helptextheadingsetting'] = 'Help texts';
+$string['helptextmodalsetting'] = 'Show help texts in a modal dialogue';
+$string['helptextmodalsetting_desc'] = 'The default solution to display help texts in popover leads to different issues. For example popovers are not scrollable and they can reach over the viewport.<br/>
+For this reason, with this setting you can decide that the help texts should be displayed in a dedicated text box (modal dialogue) that appears in the middle of the page with enough space to hold even long helping texts.';
+// ...Breakpoint.
+$string['breakpointheadingsetting'] = 'Breakpoint';
+$string['breakpointsetting'] = 'Change breakpoint';
+$string['breakpointsetting_desc'] = 'In theme Boost, the right block column will break down even on devices with a width up to 1200 pixels (widescreen resolution of the iPad is 1024 pixels, for example).
+This is because the breakpoint is set to <a href="https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints">media-breakpoint-down(lg)</a>. <br/>
+If you think there is enough space to show the content plus the blocks column side by side on a screen width of 992 pixels and up, then enable this setting. It will change the breakpoint to media-breakpoint-down(md). This will break the blocks column only on screens with widths of less than 992 pixels.';
+// ...Additional resources.
+$string['additionalresourcesheadingsetting'] = 'Additional resources';
+$string['additionalresourcessetting'] = 'Add additional resources';
+$string['additionalresourcessetting_desc'] = 'With this setting you can upload additional resources to the theme. You can reference these resources by using a link. The url will look like this: "/pluginfile.php/1/theme_boost_campus/additionalresources/0/yourfilename.someextention"<br/>
+The advantage of uploading files to this file area is that those files can be delivered without a check if the user is logged in. This is also why you should only add files that are uncritical and everyone should be allowed to access and don\'t need be protected with a valid login. <br/>
+An example for a use case can be found in the README.md file.';
 
 // ADDITIONAL STRINGS (IN ALPHABETICAL ORDER).
+$string['backtotop'] = 'Back to top';
 $string['cachedef_imagearea'] = 'Cache for imagearea items';
 $string['showhintcourseguestaccessgeneral'] = 'You are currently viewing this course as <strong>{$a->role}</strong>.';
 $string['showhintcourseguestaccesslink'] = 'To have full access to the course, you can <a href="{$a->url}">self enrol into this course</a>.';

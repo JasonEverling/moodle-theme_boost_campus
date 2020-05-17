@@ -39,7 +39,7 @@ if (get_config('theme_boost_campus', 'footerblocks') == '1columns') {
     $regions[] = 'footer-left';
 } else if (get_config('theme_boost_campus', 'footerblocks') == '2columns') {
     $regions[] = 'footer-left';
-    $regions[] = 'footer-middle';
+    $regions[] = 'footer-right';
 } else if (get_config('theme_boost_campus', 'footerblocks') == '3columns') {
     $regions[] = 'footer-left';
     $regions[] = 'footer-middle';
@@ -96,7 +96,7 @@ $THEME->layouts = [
         'file' => 'columns2.php',
         'regions' => $regions,
         'defaultregion' => 'side-pre',
-        'options' => array('nonavbar' => true, 'langmenu' => true),
+        'options' => array('nonavbar' => true, 'langmenu' => true, 'nocontextheader' => true),
     ),
     // My public page.
     'mypublic' => array(
@@ -164,4 +164,8 @@ $THEME->prescsscallback = 'theme_boost_campus_get_pre_scss';
 $THEME->yuicssmodules = array();
 $THEME->rendererfactory = 'theme_overridden_renderer_factory';
 $THEME->requiredblocks = ' ';
-$THEME->addblockposition = BLOCK_ADDBLOCK_POSITION_DEFAULT;
+if (get_config('theme_boost_campus', 'addablockposition') == 'positionnavdrawer') {
+    $THEME->addblockposition = BLOCK_ADDBLOCK_POSITION_FLATNAV;
+} else {
+    $THEME->addblockposition = BLOCK_ADDBLOCK_POSITION_DEFAULT;
+}

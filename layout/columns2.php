@@ -92,9 +92,10 @@ $templatecontext = [
     // MODIFICATION END.
 ];
 
+$nav = $PAGE->flatnav;
 // MODIDFICATION START.
 // Use the returned value from theme_boost_campus_get_modified_flatnav_defaulthomepageontop as the template context.
-$templatecontext['flatnavigation'] = theme_boost_campus_process_flatnav($PAGE->flatnav);
+$templatecontext['flatnavigation'] = theme_boost_campus_process_flatnav($nav);
 // If setting showsettingsincourse is enabled.
 if (get_config('theme_boost_campus', 'showsettingsincourse') == 'yes') {
     // Context value for requiring incoursesettings.js.
@@ -104,15 +105,18 @@ if (get_config('theme_boost_campus', 'showsettingsincourse') == 'yes') {
     // Add the returned value from theme_boost_campus_get_incourse_activity_settings to the template context.
     $templatecontext['activitynode'] = theme_boost_campus_get_incourse_activity_settings();
 }
-
-// Render colums2.mustache from boost_campus.
-echo $OUTPUT->render_from_template('theme_boost_campus/columns2', $templatecontext);
 // MODIFICATION END.
 /* ORIGINAL START.
-echo $OUTPUT->render_from_template('theme_boost/columns2', $templatecontext);
+$templatecontext['flatnavigation'] = $nav;
 ORIGINAL END. */
 
-// MODIFICATION START: Require additional layout files.
+$templatecontext['firstcollectionlabel'] = $nav->get_collectionlabel();
+
+// MODIFICATION START: Handle additional layout elements.
+// The output buffer is needed to render the additional layout elements now without outputting them to the page directly.
+ob_start();
+
+// Require additional layout files.
 // Add footer blocks and standard footer.
 require_once(__DIR__ . '/includes/footer.php');
 // Get imageareaitems config.
@@ -127,4 +131,20 @@ if (!empty($footnote)) {
     // Add footnote layout file.
     require_once(__DIR__ . '/includes/footnote.php');
 }
+
+// Get output buffer.
+$pagebottomelements = ob_get_clean();
+
+// If there isn't anything in the buffer, set the additional layouts string to an empty string to avoid problems later on.
+if ($pagebottomelements == false) {
+    $pagebottomelements = '';
+}
+// Add the additional layouts to the template context.
+$templatecontext['pagebottomelements'] = $pagebottomelements;
+
+// Render columns2.mustache from boost_campus.
+echo $OUTPUT->render_from_template('theme_boost_campus/columns2', $templatecontext);
 // MODIFICATION END.
+/* ORIGINAL START.
+echo $OUTPUT->render_from_template('theme_boost/columns2', $templatecontext);
+ORIGINAL END. */

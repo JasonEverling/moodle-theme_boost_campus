@@ -15,6 +15,8 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
+    @template theme_boost_campus/navbar
+
     Page navbar.
 }}
 {{!
@@ -22,10 +24,10 @@
     * Add class bg-white or bg-dark to the navbar dependent on the setting darknavbar.
 }}
 
-<nav class="fixed-top navbar navbar-light {{#darknavbar}}bg-dark{{/darknavbar}} {{^darknavbar}}bg-white{{/darknavbar}} navbar-expand moodle-has-zindex">
+<nav class="fixed-top navbar navbar-light {{#darknavbar}}bg-dark{{/darknavbar}} {{^darknavbar}}bg-white{{/darknavbar}} navbar-expand moodle-has-zindex" aria-label="{{#str}}sitemenubar, admin{{/str}}">
 
         <div data-region="drawer-toggle" class="d-inline-block mr-3">
-            <button aria-expanded="{{#navdraweropen}}true{{/navdraweropen}}{{^navdraweropen}}false{{/navdraweropen}}" aria-controls="nav-drawer" type="button" class="btn nav-link float-sm-left mr-1 btn-secondary" data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">{{#pix}}i/menubars{{/pix}}<span class="sr-only">{{#str}}sidepanel, core{{/str}}</span></button>
+            <button aria-expanded="{{#navdraweropen}}true{{/navdraweropen}}{{^navdraweropen}}false{{/navdraweropen}}" aria-controls="nav-drawer" type="button" class="btn nav-link float-sm-left mr-1 btn-light bg-gray" data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">{{#pix}}i/menubars{{/pix}}<span class="sr-only">{{#str}}sidepanel, core{{/str}}</span></button>
         </div>
 
         <a href="{{{ config.wwwroot }}}" class="navbar-brand {{# output.should_display_navbar_logo }}has-logo{{/ output.should_display_navbar_logo }}
@@ -48,12 +50,12 @@
             {{{ output.page_heading_menu }}}
         </ul>
         <ul class="nav navbar-nav ml-auto">
-            <div class="d-none d-lg-block">
-            {{{ output.search_box }}}
-        </div>
+            <li class="d-none d-lg-block">
+                {{{ output.search_box }}}
+            </li>
             <!-- navbar_plugin_output -->
             <li class="nav-item">
-            {{{ output.navbar_plugin_output }}}
+                {{{ output.navbar_plugin_output }}}
             </li>
             <!-- user_menu -->
             <li class="nav-item d-flex align-items-center">

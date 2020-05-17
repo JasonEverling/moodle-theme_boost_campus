@@ -9,7 +9,7 @@ Moodle Boost child theme which is intended to meet the needs of university campu
 Requirements
 ------------
 
-This plugin requires Moodle 3.5+
+This plugin requires Moodle 3.8+
 
 
 Motivation for this theme
@@ -111,6 +111,9 @@ This setting will catch the "Cmd + Arrow down" shortcut (MAC), prevent the defau
 
 This setting will catch the "Ctrl + Arrow down" shortcut (Windows), prevent the default scrolling to the bottom of the web page and changes the behavior to scroll only to the bottom of the main course content.
 
+##### Position of "Add a block" widget
+
+With this setting you can manage where the "Add a block" widget should be displayed. "At the bottom of the nav drawer" means the widget to add new blocks is displayed in the left sliding navigation panel like in theme Boost. "At the bottom of the default block region" means the widget to add new blocks will be displayed in the default block region.
 
 ### 3. Tab "Course Layout Settings"
 
@@ -126,7 +129,7 @@ With this setting you can add an additional course edit on / off button to the c
 
 ##### Position of switch role information
 
-With this setting you can choose the place where the information to which role a user has switched is being displayed. If not checked (default value), the role information will be displayed right beneath the user\'s name in the user menu (like in theme Boost). If checked, this information - together with a link to switch back - will be displayed beneath the course, as this functionality is course related.
+With this setting you can choose the place where the information to which role a user has switched is being displayed. If set to 'Just in the user menu' (default value), the role information will be displayed right beneath the user\'s name in the user menu (like in theme Boost). If set to 'Just in the course settings', this information - together with a link to switch back - will be displayed beneath the course, as this functionality is course related. If set to 'Both in the user menu and in the course settings' it will be shown in both places.
 
 ##### Show hint in hidden courses
 
@@ -144,10 +147,9 @@ With this setting you can change the displaying of the context menus. In Boost, 
 
 Please note that this change does not affect users who have switched off javascript in their browsers - they will still get the behaviour from Moodle core with a popup course context menu.
 
-##### Move "Switch role to..." to the course settings
+##### Switch role to..." location(s)
 
-With this setting you can move the "Switch role to..." link as a new tab from the user menu to the in-course course menu. The role switching is a feature which is used in course context and thus it is better to place it in the course settings menu than in the user menu.
-Please note that this setting won't have any effect if you do not activate the "In course settings menu" above.
+With this setting you can choose the place where the information to which role a user has switched is being displayed. If set to 'Just in the user menu' (default value), the role information will be displayed right beneath the user's name in the user menu (like in theme Boost). If set to 'Just in the course settings', this information - together with a link to switch back - will be displayed beneath the course, as this functionality is course related. If set to 'Both in the user menu and in the course settings' it will be shown in both places.
 
 ### 4. Tab "Footer Layout Settings"
 
@@ -206,11 +208,21 @@ By checking this setting you can enlarge the opened nav drawer menu to the full 
 
 ##### Login page background images
 
-In this setting you can add up to 10 files as a background image for the login page. One of these images will be picked randomly and delivered when the user visits the login page.
+In this setting you can add up to 25 files as a background image for the login page. One of these images will be picked randomly and delivered when the user visits the login page.
 
 Please note: These images will *not* be rendered on small screens. We prevent the loading of the images for several reasons:
 * The login field takes most of the space on small screens, so the background image is hidden behind it and therefore it is not really needed there.
 * Smalls screens indicate that the user is visiting the page with a mobile device. Not loading the background image in this cases will also save data traffic for the user.
+
+##### Display text for login background images
+
+With this optional setting you can add text, e.g. a copyright notice to your uploaded background images.
+Each line consists of the file identifier (the file name) and the text that should be displayed, separated by a pipe character. Each declaration needs to be written in a new line.
+
+For example:
+``background-image-1.jpg|Copyright: CC0``
+
+You can declare texts for a arbitrary amount of your uploaded background images. The texts will be added only to those images that match their filename with the identifier declared in this setting.
 
 ##### Login form
 
@@ -298,13 +310,40 @@ Please note: The code itself and the URLs have to fit exactly to your uploaded f
 
 ##### Block icon
 
-With this setting you can add a default Font Awesome icon in front of the block title. If checked, we additionally provide individual icon replacements for many Moodle core blocks and also some widely used blocks. You also can change the icons easily for each block individually in your raw SCSS via the change of the Font Awesome content. For all available icons please visit http://fontawesome.io/icons/ and use the Unicode value of the icon to replace the default one. The code to change the icon looks like this example change for the block "People": ``.block_people .card-block .card-title::before { content: '\f0c0' ; }``.
+With this setting you can add a default Font Awesome icon in front of the block title. If checked, we additionally provide individual icon replacements for many Moodle core blocks and also some widely used blocks. You also can change the icons easily for each block individually in your raw SCSS via the change of the Font Awesome content. For all available icons please visit https://fontawesome.com/v4.7.0/icons/ and use the Unicode value of the icon to replace the default one. The code to change the icon looks like this example change for the block "People": ``.block_people .card-block .card-title::before { content: '\f0c0' ; }``.
 
 #### Navbar
 
 ##### Dark navbar
 
 By enabling this setting you can invert the default light navbar to a dark one with white links.
+
+#### Help texts
+
+##### Show help texts in a modal dialogue
+
+The default solution to display help texts in popover leads to different issues. For example popovers are not scrollable and they can reach over the viewport.
+For this reason, with this setting you can decide that the help texts should be displayed in a dedicated text box (modal dialogue) that appears in the middle of the page with enough space to hold even long helping texts.
+
+#### Breakpoint
+
+##### Change breakpoint
+
+In theme Boost, the right block column will break down even on devices with a width up to 1200 pixels (widescreen resolution of the iPad is 1024 pixels, for example).
+This is because the breakpoint is set to [media-breakpoint-down(lg)](https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints").
+
+If you think there is enough space to show the content plus the blocks column side by side on a screen width of 992 pixels and up, then enable this setting. It will change the breakpoint to media-breakpoint-down(md). This will break the blocks column only on screens with widths of less than 992 pixels.
+
+#### Additional resources
+
+##### Add additional resources
+
+With this setting you can upload additional resources to the theme. You can reference these resources by using a link.
+The advantage of uploading files to this file area is that those files can be delivered without a check if the user is logged in. This is also why you should only add files that are uncritical and everyone should be allowed to access and don't need be protected with a valid login.
+
+Use case and usage example:
+We're using the footer blocks setting and some of the blocks are displaying an image that was added to the HTML block. When a newly registered user logs in, he will be redirected to the policy page (user/policy.php). The footer blocks are displayed on this page layout and because the HTML block will only deliver its resources after the user is logged in and accepted the user policy, the delivering will be prevented and the redirect is saved to this resource. This leads to the behavior that after accepting the policy the resource was displayed and not the Dashbaord as intended.
+With this setting, the image (e.g. htmlblockimage.png) that should be displayed in the block could be added to this file area and added as a link with the url "/pluginfile.php/1/theme_boost_campus/additionalresources/0/htmlblockimage.png".
 
 
 Further improvements to Boost core theme
@@ -327,7 +366,7 @@ We added a back to top button that appears in the right bottom corner when the u
 ### Design
 
 * Added Font Awesome icons to mailto and broken links. Furthermore, colored broken link in red for fast recognizability.
-* Added a Video JS skin that fits to the brand color and moves the player button back to the center.
+* Added a Video JS skin that fits to the brand color.
 
 Course Design:
 
@@ -338,6 +377,7 @@ Course Design:
 * Designed description and intro boxes.
 * Designed blockquotes.
 * Improved design of maintenance warning to be more visible.
+* Changed the design of the activity navigation links within a course to buttons for better recognisability.
 
 ### Categories overview page
 
@@ -346,6 +386,10 @@ Improved font sizes and weights on category overview page for better readability
 ### User profile page
 
 * Replaced the the user settings icon with a button to edit the profile. The menu items shown in this setting are not related to the user profile in the closer sense, they are related to the user's system preferences. So we decided to replace this with the only profile related function. Furthermore, the user preferences can be accessed any time over the user's menu in the fixed to top navigation bar.
+
+### Layout
+
+* Reduced paddings on small screens (max. 768px) to be able to show a little bit more content and less whitespace.
 
 
 How this theme works
@@ -424,7 +468,6 @@ Copyright
 ---------
 
 Ulm University
-kiz - Media Department
-Team Web & Teaching Support
+Communication and Information Centre (kiz)
 Kathrin Osswald
 

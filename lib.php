@@ -79,7 +79,7 @@ function theme_boost_campus_get_pre_scss($theme) {
     $scss = '';
     $configurable = [
         // Config key => [variableName, ...].
-        'brandcolor' => ['brand-primary'],
+        'brandcolor' => ['primary'],
         // MODIFICATION START: Add own variables.
         'section0title' => ['section0title'],
         'showswitchedroleincourse' => ['showswitchedroleincourse'],
@@ -88,18 +88,23 @@ function theme_boost_campus_get_pre_scss($theme) {
         'footerhidelogininfo' => ['footerhidelogininfo'],
         'footerhidehomelink' => ['footerhidehomelink'],
         'blockicon' => ['blockicon'],
-        'brandsuccesscolor' => ['brand-success'],
-        'brandinfocolor' => ['brand-info'],
-        'brandwarningcolor' => ['brand-warning'],
-        'branddangercolor' => ['brand-danger'],
+        'brandsuccesscolor' => ['success'],
+        'brandinfocolor' => ['info'],
+        'brandwarningcolor' => ['warning'],
+        'branddangercolor' => ['danger'],
         'darknavbar' => ['darknavbar'],
         'footerblocks' => ['footerblocks'],
         'imageareaitemsmaxheight' => ['imageareaitemsmaxheight'],
         'showsettingsincourse' => ['showsettingsincourse'],
-        'incoursesettingsswitchtorole' => ['incoursesettingsswitchtorole'],
+        'incoursesettingsswitchtoroleposition' => ['incoursesettingsswitchtoroleposition'],
         'hidefooteronloginpage' => ['hidefooteronloginpage'],
         'footerhideusertourslink' => ['footerhideusertourslink'],
-        'navdrawerfullwidth' => ['navdrawerfullwidth']
+        'navdrawerfullwidth' => ['navdrawerfullwidth'],
+        'helptextmodal' => ['helptextmodal'],
+        'breakpoint' => ['breakpoint'],
+        'blockcolumnwidth' => ['blockcolumnwidth'],
+        'blockcolumnwidthdashboard' => ['blockcolumnwidthdashboard'],
+        'addablockposition' => ['addablockposition']
         // MODIFICATION END.
     ];
 
@@ -113,6 +118,23 @@ function theme_boost_campus_get_pre_scss($theme) {
             $scss .= '$' . $target . ': ' . $value . ";\n";
         }, (array) $targets);
     }
+
+    // MODIFICATION START: Overwrite Boost core SCSS variables which need units and thus couldn't be added to $configurable above.
+    // Set variables which are processed in the context of the blockcolumnwidth setting.
+    if (isset($theme->settings->blockcolumnwidth)) {
+        $scss .= '$blocks-column-width: ' . $theme->settings->blockcolumnwidth . "px;\n";
+        $scss .= '$grid-gutter-width: ' . "30px;\n";
+    }
+    // MODIFICATION END.
+
+    // MODIFICATION START: Set own SCSS variables which need units or calculations and thus couldn't be
+    // added to $configurable above.
+    // Set variables which are processed in the context of the blockcolumnwidth setting.
+    if (isset($theme->settings->blockcolumnwidthdashboard)) {
+        $scss .= '$blocks-column-width-dashboard: ' . $theme->settings->blockcolumnwidthdashboard . "px;\n";
+        $scss .= '$blocks-plus-gutter-dashboard: $blocks-column-width-dashboard + ( $grid-gutter-width / 2 )' . ";\n";
+    }
+    // MODIFICATION END.
 
     // MODIFICATION START: Add login background images that are uploaded to the setting 'loginbackgroundimage' to CSS.
     $scss .= theme_boost_campus_get_loginbackgroundimage_scss();
@@ -156,6 +178,8 @@ function theme_boost_campus_pluginfile($course, $cm, $context, $filearea, $args,
             return $theme->setting_file_serve('fontfiles', $args, $forcedownload, $options);
         } else if ($filearea === 'imageareaitems') {
             return $theme->setting_file_serve('imageareaitems', $args, $forcedownload, $options);
+        } else if ($filearea === 'additionalresources') {
+            return $theme->setting_file_serve('additionalresources', $args, $forcedownload, $options);
         } else {
             send_file_not_found();
         }

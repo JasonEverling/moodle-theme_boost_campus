@@ -25,17 +25,22 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/theme/boost_campus/locallib.php');
+
 $bodyattributes = $OUTPUT->body_attributes();
+$loginbackgroundimagetext = theme_boost_campus_get_loginbackgroundimage_text();
 
 $templatecontext = [
     'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
     'output' => $OUTPUT,
-    'bodyattributes' => $bodyattributes
+    'bodyattributes' => $bodyattributes,
+    'loginbackgroundimagetext' => $loginbackgroundimagetext
 ];
 
-echo $OUTPUT->render_from_template('theme_boost/login', $templatecontext);
+// MODIFICATION START: Handle additional layout elements.
+// The output buffer is needed to render the additional layout elements now without outputting them to the page directly.
+ob_start();
 
-// MOFIFICATION START.
 // Include own layout file for the footnote region.
 // The theme_boost/login template already renders the standard footer.
 // The footer blocks and the image area are currently not shown on the login page.
@@ -46,4 +51,20 @@ if (!empty($footnote)) {
     // Add footnote layout file.
     require_once(__DIR__ . '/includes/footnote.php');
 }
+
+// Get output buffer.
+$pagebottomelements = ob_get_clean();
+
+// If there isn't anything in the buffer, set the additional layouts string to an empty string to avoid problems later on.
+if ($pagebottomelements == false) {
+    $pagebottomelements = '';
+}
+// Add the additional layouts to the template context.
+$templatecontext['pagebottomelements'] = $pagebottomelements;
+
+// Render own template.
+echo $OUTPUT->render_from_template('theme_boost_campus/login', $templatecontext);
 // MODIFICATION END.
+/* ORIGINAL START.
+echo $OUTPUT->render_from_template('theme_boost/login', $templatecontext);
+ORIGINAL END. */
